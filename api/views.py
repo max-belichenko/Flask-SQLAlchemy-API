@@ -114,7 +114,9 @@ def change_user_roles(id):
         return jsonify({'error': f'No user with id = {id}'})
 
     data = request.get_json()
-    if isinstance(data, dict):  # Если передан только один статус
+    if data is None:
+        return jsonify({'error': f'No JSON data received.'})
+    elif isinstance(data, dict):  # Если передан только один статус
         data = [data, ]
 
     for item in data:
