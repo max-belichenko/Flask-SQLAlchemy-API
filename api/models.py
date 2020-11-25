@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from marshmallow import pre_dump
 from passlib.apps import custom_app_context
 
 from api import db, ma
@@ -139,6 +140,35 @@ class RequestSchema(ma.Schema):
     class Meta:
         # Список полей, доступных при сериализации
         fields = ('id', 'created_dt', 'updated_dt', 'user_id', 'status_id', 'text')
+
+
+class OperateRequestSchema(ma.Schema):
+    """
+    Описывает сериализацию объекта Заявки.
+    """
+    class Meta:
+        # Список полей, доступных при сериализации
+        fields = ('id', 'created_dt', 'updated_dt', 'user_id', 'status_id', 'text')
+
+    @pre_dump
+    def text_for_operator(self, in_data, **kwargs):
+        """
+        Изменяет значение поля text, вставляя символ "-" между всеми символами.
+
+        :param in_data: Объект модели Request
+        :param kwargs:
+        :return: Изменённый объект
+        """
+        text = in_data.text
+        text_length = len(text)
+        updated_text = ''.join(
+            [
+                ('-' if i>=1 else '') + text[i]
+                for i in range(text_length)
+            ]
+        )
+        in_data.text = updated_text
+        return in_data
 
 
 class Status(db.Model):

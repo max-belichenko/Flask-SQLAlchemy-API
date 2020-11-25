@@ -2,7 +2,7 @@ from flask import request, jsonify
 
 from api import app, auth, db
 from api.config import Config
-from api.models import User, UserSchema, Role, RoleSchema, Request, Status, RequestSchema
+from api.models import User, UserSchema, Role, RoleSchema, Request, Status, RequestSchema, OperateRequestSchema
 
 
 @auth.verify_password
@@ -328,7 +328,7 @@ def get_sent_requests():
     status_object = Status.query.filter_by(code=Config.SENT_STATUS).first()
 
     request_objects = Request.query.filter_by(status=status_object).order_by(Request.created_dt.desc()).all()
-    request_schema = RequestSchema(many=True)
+    request_schema = OperateRequestSchema(many=True)
 
     result = request_schema.dump(request_objects)
 
