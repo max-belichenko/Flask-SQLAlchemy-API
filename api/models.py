@@ -26,7 +26,7 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(128), index=True)
+    username = db.Column(db.String(128), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     roles = db.relationship('Role', secondary=user_roles, lazy='subquery', backref=db.backref('users', lazy=True))
     requests = db.relationship('Request', backref='user', lazy=True)

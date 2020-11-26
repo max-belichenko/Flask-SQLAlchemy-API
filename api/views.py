@@ -115,13 +115,16 @@ def change_user_roles(id):
 
     data = request.get_json()
     if data is None:
-        return jsonify({'error': f'No JSON data received.'})
-    elif isinstance(data, dict):  # Если передан только один статус
+        return jsonify({'error': 'Received incorrect data. Awaiting JSON {"role", "status"}'})
+    elif not isinstance(data, list):  # Если передан только один статус
         data = [data, ]
 
     for item in data:
-        role_code = item['role']
-        role_status = item['status']
+        try:
+            role_code = item['role']
+            role_status = item['status']
+        except (KeyError, TypeError):
+            return jsonify({'error': 'Received incorrect data. Awaiting JSON {"role", "status"}'})
 
         role_object = Role.query.filter_by(code=role_code).first()
         if not role_object:
@@ -181,7 +184,10 @@ def new_request():
 
     :return: JSON объект заявки
     """
-    text = request.json.get('text')
+    try:
+        text = request.json.get('text')
+    except AttributeError:
+        return jsonify({'error': 'Received incorrect data. Awaiting JSON {"text"}'})
 
     if text is None:
         return jsonify({'error': 'text is missing'})
@@ -316,7 +322,7 @@ def send_request(id):
     return jsonify(result)
 
 
-@app.route('/requests/operate', methods=['GET'])
+@app.route('/sent_requests', methods=['GET'])
 @auth.login_required(role=Config.OPERATOR_ROLE)
 def get_sent_requests():
     """
