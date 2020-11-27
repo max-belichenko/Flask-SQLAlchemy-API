@@ -122,7 +122,7 @@ class Request(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     status_id = db.Column(db.Integer, db.ForeignKey('statuses.id'), nullable=False)
 
-    text = db.Column(db.Text, nullable=False)
+    text = db.Column(db.Text)
 
     def __repr__(self):
         """
