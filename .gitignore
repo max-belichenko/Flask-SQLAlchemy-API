@@ -1,5 +1,6 @@
 # Custom files
-*.sqlite
+db.sqlite
+test.db
 
 
 # Byte-compiled / optimized / DLL files
